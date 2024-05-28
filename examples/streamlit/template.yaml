@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: Sample SAM Template for streamlit
+
+Globals:
+  Function:
+    Timeout: 10
+
+Resources:
+  StreamlitFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      MemorySize: 256
+      Events:
+        ApiEvent:
+          Type: HttpApi
+    Metadata:
+      Dockerfile: Dockerfile
+      DockerContext: ./src
+
+Outputs:
+  Endpoint:
+    Description: "API Gateway endpoint URL for Prod stage for Flask function"
+    Value: !Sub "https://${ServerlessHttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/"
+  FunctionArn:
+    Description: Streamlit Lambda Function arn
+    Value: !GetAtt StreamlitFunction.Arn
+  IAMRole:
+    Description:
+    Value: !GetAtt StreamlitFunctionRole.Arn
